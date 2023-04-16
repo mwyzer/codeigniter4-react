@@ -101,6 +101,27 @@ class Products extends ResourceController
      */
     public function delete($id = null)
     {
-        //
+        helper(['form']);
+        $rules = [
+            'title' => 'required',
+            'price' => 'required'
+        ];
+        $data = [
+            'title' => $this->request->getVar('title'),
+            'price' => $this->request->getVar('price')
+        ];
+        if(!$this->validate($rules)) return $this->fail($this->validator->getErrors());
+        $model = new ProductModel();
+        $findById = $model->find(['id' => $id]);
+        if(!$findById) return $this->FailNotFound('Data not found');
+        $model-> delete($id);
+        $response = [
+            'status' => 200,
+            'error' => null,
+            'messages' => [
+                'success' => 'data success deleted ' 
+            ]
+        ];
+        return $this->respond($response);
     }
 }
